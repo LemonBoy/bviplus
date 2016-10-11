@@ -273,12 +273,16 @@ action_code_t cmd_parse(char *cbuff)
   tok = strtok(cbuff, delimiters);
   if (tok != NULL)
   {
-    if (strncmp(tok,"0x",2) == 0)
-      num = strtoll(tok, &endptr, 16);
-    else
-      num = strtoll(tok, &endptr, 10);
+    int relative = 0; // -1 or +1 means that the jump is relative to the cursor
+    if (tok[0] == '+' || tok[0] == '-') {
+      relative = (tok[0] == '-') ? -1 : +1;
+      tok++;
+    }
+    num = strtoll(tok, &endptr, 0);
     if ((endptr - tok) == strlen(tok))
     {
+      if (relative != 0)
+        num = display_info.cursor_addr + relative * num;
       if (address_invalid(num))
         msg_box("Invalid jump address: %d", num);
       else
@@ -884,6 +888,7 @@ off_t get_next_motion_addr(void)
   }
   return display_info.virtual_cursor_addr;
 }
+
 
 int is_hex(int c)
 {
