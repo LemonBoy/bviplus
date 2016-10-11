@@ -44,7 +44,7 @@ void search_state_reset(search_state_t *search_state)
     search_state->match_state[i] = UNFULFILLED;
 }
 
-int inline matches(unsigned char byte, match_criteria_t *criteria)
+int matches(unsigned char byte, match_criteria_t *criteria)
 {
   int i;
 
