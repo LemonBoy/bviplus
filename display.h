@@ -90,7 +90,9 @@
 
 #define PAGE_SIZE (HEX_LINES * BYTES_PER_LINE)
 #define _PAGE_END (display_info.page_start + PAGE_SIZE - 1)
-#define PAGE_END  (_PAGE_END > display_info.file_size ? display_info.file_size - 1 : _PAGE_END)
+#define PAGE_END  (_PAGE_END > display_info.file_size \
+                   ? display_info.file_size - (display_info.file_size != 0) \
+                   : _PAGE_END)
 
 #define HEX(x) ((x) < 0xA ? '0' + (x) : 'a' + (x) - 0xa)
 #define MSG_BOX_H 8

@@ -703,7 +703,7 @@ void print_screen_buf(off_t addr, char *screen_buf, int screen_buf_size, search_
 
 void print_screen(off_t addr)
 {
-  int screen_buf_size;
+  size_t screen_buf_size;
   char *screen_buf;
   search_aid_t search_aid, *sa_p = NULL;
 
@@ -712,7 +712,7 @@ void print_screen(off_t addr)
 
   screen_buf_size = PAGE_END - addr + 1;
   screen_buf = (char *)malloc(screen_buf_size);
-  vf_get_buf(current_file, screen_buf, addr, screen_buf_size);
+  screen_buf_size = vf_get_buf(current_file, screen_buf, addr, screen_buf_size);
 
   if (search_item[current_search].used == TRUE)
   {
