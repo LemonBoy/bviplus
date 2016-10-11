@@ -551,6 +551,13 @@ void update_status_window(void)
   len += snprintf(line+len, MAX_FILE_NAME-len, "%s", display_info.status_msg);
   if (macro_key != -1)
     len += snprintf(line+len, MAX_FILE_NAME-len, "[recording '%c']", macro_key + 'a');
+  if (is_visual_on()) {
+    off_t start = visual_addr();
+    off_t size = visual_span();
+    len += snprintf(line+len, MAX_FILE_NAME-len, "|%jx-%jx| (%jx/%jd)", start,
+                    display_info.cursor_addr, size, size);
+  }
+
   line[MAX_FILE_NAME-1] = 0;
   mvwaddstr(window_list[WINDOW_STATUS], 0, 0, line);
 
