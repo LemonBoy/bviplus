@@ -24,6 +24,7 @@
  *************************************************************/
 
 #include <ncurses.h>
+#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -911,7 +912,7 @@ void do_insert(int count, int c)
   int hy, hx, ay, ax;
   int ins_buf_size;
   int chars_per_byte, char_count = 0, tmp_char_count = 0, low_tmp_char_count = 0;
-  int offset = 0, len1, ins_buf_offset, len2, len3;
+  int offset = 0, len1, ins_buf_offset, len2, len3, screen_len;
   off_t ins_addr, page_start;
 
   screen_buf = (char *)malloc(2 * PAGE_SIZE); /* fix this later, but make it big for now */
@@ -949,6 +950,7 @@ void do_insert(int count, int c)
     if ((offset + char_count + 1) > PAGE_SIZE)
       page_start += BYTES_PER_LINE;
     offset = ins_addr - page_start;
+    // Start the display from within the ins_buf
     if (offset < 0)
     {
       len1 = 0;
@@ -961,25 +963,22 @@ void do_insert(int count, int c)
       len2 = char_count;
       ins_buf_offset = 0;
     }
-    if ((len1 + len2) > PAGE_SIZE)
+    // After the insertion point
+    if (len1 + len2 > PAGE_SIZE)
       len3 = 0;
     else
-    {
-      len3 = (PAGE_END - page_start) - len1 + user_prefs[GROUPING].value;
-      if ((len1 + len2 + len3) > PAGE_SIZE)
-        len3 = PAGE_SIZE - (len1 + len2);
-    }
+      len3 = PAGE_SIZE - len1 - len2 + user_prefs[GROUPING].value;
+
+    screen_len = len2;
 
     if (len1 != 0)
-      vf_get_buf(current_file, screen_buf, page_start, len1);
+      screen_len += vf_get_buf(current_file, screen_buf, page_start, len1);
     if (len2 != 0)
       memcpy(screen_buf + len1, ins_buf + ins_buf_offset, len2);
     if (len3 > 0)
-      vf_get_buf(current_file, screen_buf + len1 + len2 + user_prefs[GROUPING].value, ins_addr, len3);
-    else
-      len3 = 0;
+      screen_len += vf_get_buf(current_file, screen_buf + len1 + len2 + user_prefs[GROUPING].value, ins_addr, len3);
 
-    print_screen_buf(page_start, screen_buf, len1+len2+1+len3, NULL);
+    print_screen_buf(page_start, screen_buf, screen_len, NULL);
 
     if (display_info.cursor_window == WINDOW_HEX)
     {

@@ -605,9 +605,9 @@ void update_status_window(void)
             "%s %08jx/%08jx  %ju/%ju %s",
             display_info.percent,
             display_info.cursor_addr,
-            display_info.file_size - 1,
+            display_info.file_size,
             display_info.cursor_addr,
-            display_info.file_size - 1,
+            display_info.file_size,
             size_text);
 
   /* reset cursor */
@@ -710,9 +710,8 @@ void print_screen(off_t addr)
   display_info.page_start = addr;
   display_info.page_end = PAGE_END;
 
-  screen_buf_size = PAGE_END - addr + 1;
-  screen_buf = (char *)malloc(screen_buf_size);
-  screen_buf_size = vf_get_buf(current_file, screen_buf, addr, screen_buf_size);
+  screen_buf = (char *)malloc(PAGE_SIZE);
+  screen_buf_size = vf_get_buf(current_file, screen_buf, addr, PAGE_SIZE);
 
   if (search_item[current_search].used == TRUE)
   {
