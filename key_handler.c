@@ -885,13 +885,6 @@ off_t get_next_motion_addr(void)
   return display_info.virtual_cursor_addr;
 }
 
-
-int is_bin(c)
-{
-  if (c != '0' && c != '1')
-    return 0;
-  return 1;
-}
 int is_hex(int c)
 {
   c = toupper(c);

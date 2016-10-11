@@ -45,7 +45,7 @@ BOOL msg_prompt(char *fmt, ...)
   char msgbox_str[MAX_MSG_BOX_LEN];
   char msgbox_line[MAX_MSG_BOX_LEN];
   const char delimiters[] = " \t";
-  int x = 1, y = 1, len = 0, c;
+  int x = 1, y = 1, c;
   va_list args;
 
   memset(msgbox_str, 0, MAX_MSG_BOX_LEN);
@@ -57,7 +57,6 @@ BOOL msg_prompt(char *fmt, ...)
   va_start(args, fmt);
   vsnprintf(msgbox_str, MAX_MSG_BOX_LEN, fmt, args);
   va_end(args);
-  len = strlen(msgbox_str);
 
   tok = strtok(msgbox_str, delimiters);
   while(tok)
@@ -159,7 +158,7 @@ void msg_box(const char *fmt, ...)
   char msgbox_str[MAX_MSG_BOX_LEN];
   char msgbox_line[MAX_MSG_BOX_LEN];
   const char delimiters[] = " \t";
-  int x = 1, y = 1, len = 0;
+  int x = 1, y = 1;
   va_list args;
 
   memset(msgbox_str, 0, MAX_MSG_BOX_LEN);
@@ -171,7 +170,6 @@ void msg_box(const char *fmt, ...)
   va_start(args, fmt);
   vsnprintf(msgbox_str, MAX_MSG_BOX_LEN, fmt, args);
   va_end(args);
-  len = strlen(msgbox_str);
 
   tok = strtok(msgbox_str, delimiters);
   while(tok)
@@ -857,11 +855,6 @@ void destroy_screen(void)
 
 void create_screen(void)
 {
-  int a, h;
-
-  h = HEX_BOX_W;
-  a = ASCII_BOX_W;
-
   window_list[WINDOW_MENU]  = newwin( MENU_BOX_H,  MENU_BOX_W,  MENU_BOX_Y,  MENU_BOX_X);
   window_list[WINDOW_ADDR]  = newwin( ADDR_BOX_H,  ADDR_BOX_W,  ADDR_BOX_Y,  ADDR_BOX_X);
   window_list[WINDOW_HEX]   = newwin(  HEX_BOX_H,   HEX_BOX_W,   HEX_BOX_Y,   HEX_BOX_X);
